@@ -154,7 +154,7 @@ def main():
         # Initialize the policy's mean close to zero
         model.pi[4].weight[:] *= 1e-2
 
-    optimizer = pfrl.optimizers.SharedRMSpropEpsInsideSqrt(model.parameters(), lr=1e-4)
+    optimizer = pfrl.optimizers.SharedRMSpropEpsInsideSqrt(model.parameters(), lr=1e-4, alpha=0.99, eps=4e-3)
     assert optimizer.state_dict()["state"], (
         "To share optimizer state across processes, the state must be"
         " initialized before training."
