@@ -108,7 +108,7 @@ def main():
         # Normalize action space to [-1, 1]^n
         env = pfrl.wrappers.NormalizeActionSpace(env)
         if args.monitor:
-            env = gym.wrappers.Monitor(env, args.outdir)
+            env = pfrl.wrappers.Monitor(env, args.outdir)
         if args.render:
             env = pfrl.wrappers.Render(env)
         return env
@@ -177,17 +177,22 @@ def main():
         use_Q_opc=True,
     )
 
+    if args.load:
+        agent.load(args.load)
+
     if args.demo:
         env = make_env(0, True)
+        print("timestep_limmit", timestep_limit)
         eval_stats = experiments.eval_performance(
             env=env,
             agent=agent,
             n_steps=None,
             n_episodes=args.eval_n_runs,
+            max_episode_len=timestep_limit,
         )
         print(
-            "n_steps: {} mean: {} median: {} stdev: {}".format(
-                args.eval_n_steps,
+            "n_episodes: {} mean: {} median: {} stdev: {}".format(
+                args.eval_n_runs,
                 eval_stats["mean"],
                 eval_stats["median"],
                 eval_stats["stdev"],
